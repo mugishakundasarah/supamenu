@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Input } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { FONT, SIZES } from '../../constants/theme';
+import { FONT, SIZES } from '../constants/theme';
 
 function InputWithIcon({name, placeholder}) {
     return (
