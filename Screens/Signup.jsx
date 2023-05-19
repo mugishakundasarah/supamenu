@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Feather'
 
 import colors from "../Utils/colors"
 
-const Signup = () => {
+const Signup = ({navigation}) => {
     const { values } = useFormik({
         initialValues: {
             email: "",
@@ -93,7 +93,7 @@ const Signup = () => {
                 <TouchableOpacity
                     style={styles.button}
                     onPress={() => {
-                        navigation.navigate('SignIn');
+                        navigation.navigate('SignIn')
                     }}
                 >
                     <Text style={styles.buttonText}>Sign in</Text>

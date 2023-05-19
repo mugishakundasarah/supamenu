@@ -1,20 +1,23 @@
 import { useEffect, useState } from "react"
 import * as SecureStore from "expo-secure-store"
-import { createStackNavigator } from "@react-navigation/stack"
+import {createNativeStackNavigator} from '@react-navigation/native-stack'
+
 import SignIn from "../Screens/Signin"
 import Signup from "../Screens/Signup"
+import Search from "../Screens/Search"
 const Navigator = () => {
     return <AppNavigator />
 }
 
 const AuthNavigator = () => {
-    const Stack = createStackNavigator();
+    const Stack = createNativeStackNavigator();
     return (
         <Stack.Navigator
             initialRouteName="SignUp"
         >
             <Stack.Screen name="SignIn" component={SignIn} options={{headerShown: false }}/>
             <Stack.Screen name="SignUp" component={Signup} options={{headerShown: false}}/>
+            <Stack.Screen name="Scan" component={Search} options={{headerShown: false}}/>
         </Stack.Navigator>
     )
 }
