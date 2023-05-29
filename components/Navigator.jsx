@@ -5,6 +5,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import SignIn from "../Screens/Signin"
 import Signup from "../Screens/Signup"
 import Search from "../Screens/Search"
+import ChooseRestaurant from "../Screens/ChooseRestaurant"
 const Navigator = () => {
     return <AppNavigator />
 }
@@ -18,6 +19,7 @@ const AuthNavigator = () => {
             <Stack.Screen name="SignIn" component={SignIn} options={{headerShown: false }}/>
             <Stack.Screen name="SignUp" component={Signup} options={{headerShown: false}}/>
             <Stack.Screen name="Scan" component={Search} options={{headerShown: false}}/>
+            <Stack.Screen name="ChooseRestaurant" component={ChooseRestaurant} options={{headerShown: false}}/>
         </Stack.Navigator>
     )
 }

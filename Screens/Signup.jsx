@@ -1,18 +1,47 @@
-import { StyleSheet, Text, TextInput, View, SafeAreaView, TouchableOpacity, ScrollView } from "react-native"
+import { StyleSheet, Text, TextInput, View, SafeAreaView, TouchableOpacity, ScrollView, Alert } from "react-native"
 import {useFormik} from "formik"
 import Icon from 'react-native-vector-icons/Feather'
+import axios from "axios"
 
 import colors from "../Utils/colors"
 
 const Signup = ({navigation}) => {
-    const { values } = useFormik({
+    const { values, handleSubmit, handleChange } = useFormik({
         initialValues: {
             email: "",
             password: "",
             mobile: "",
             fullName: "",
+        },
+        onSubmit: async (values, {resetForm}) => {
+            if(!values.email || !values.password || !values.mobile || !values.fullName){
+                Alert.alert("All fields are required")
+                return;
+            }
+
+            try {
+                const res = await axios.post(`http://192.168.8.119:3000/signup`,
+                {
+                    email: values.email,
+                    password: values.password,
+                    phoneNumber: values.mobile,
+                    fullName: values.fullName,
+                })
+                if(res.status === 201){
+                    Alert.alert('Success', res.data.message)
+                    resetForm()
+                    navigation.navigate('SignIn')
+                }
+                else{
+                    throw new Error(res.data.message);
+                }
+            } catch (error) {
+                console.log(error)
+                Alert.alert('Error', error.message)   
+            }
         }
     })
+
     return (
         <SafeAreaView style={styles.container}>
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -34,7 +63,7 @@ const Signup = ({navigation}) => {
                             placeholder="Fullname"
                             autoCapitalize="none"
                             value={values.fullName}
-                            // onChangeText={handleChange('fullName')}
+                            onChangeText={handleChange('fullName')}
                         />
                         <Icon name="user" size={20} color="#9098b2" style={styles.icon} />
                     </View>
@@ -46,7 +75,7 @@ const Signup = ({navigation}) => {
                             placeholder="Phone number"
                             autoCapitalize="none"
                             value={values.mobile}
-                            // onChangeText={handleChange('mobile')}
+                            onChangeText={handleChange('mobile')}
                         />
                     </View>
 
@@ -57,7 +86,7 @@ const Signup = ({navigation}) => {
                             placeholder="Your email"
                             autoCapitalize="none"
                             value={values.email}
-                            // onChangeText={handleChange('email')}
+                            onChangeText={handleChange('email')}
                         />
                     </View>
 
@@ -69,7 +98,7 @@ const Signup = ({navigation}) => {
                             placeholder="Your password"
                             autoCapitalize="none"
                             value={values.password}
-                            // onChangeText={handleChange('password')}
+                            onChangeText={handleChange('password')}
                         />
                     </View>
 

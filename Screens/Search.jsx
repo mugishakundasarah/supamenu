@@ -9,6 +9,7 @@ const Search = (props) => {
     const searchSubmit = () => {
         props.navigation.navigate('ChooseRestaurant', { search: text });
     };
+    
     return (
         <View style={styles.container}>
             <SearchBar
