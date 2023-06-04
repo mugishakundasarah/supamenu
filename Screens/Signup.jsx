@@ -2,7 +2,6 @@ import { StyleSheet, Text, TextInput, View, SafeAreaView, TouchableOpacity, Scro
 import {useFormik} from "formik"
 import Icon from 'react-native-vector-icons/Feather'
 import axios from "axios"
-
 import colors from "../Utils/colors"
 
 const Signup = ({navigation}) => {

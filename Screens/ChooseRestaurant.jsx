@@ -7,6 +7,7 @@ import {
     ScrollView,
     TouchableOpacity,
 } from 'react-native';
+import {MaterialCommunityIcons} from '@expo/vector-icons'
 
 const Restaurant = ({ navigation }) => {
     const contents = [
@@ -23,7 +24,7 @@ const Restaurant = ({ navigation }) => {
                     <TouchableOpacity
                         key={c.id}
                         onPress={() => {
-                            navigatation.navigate('RestaurantMenu', { restaurant: c });
+                            navigation.navigate('RestaurantMenu', { restaurant: c });
                         }}
                     >
                         <View style={styles.container}>
@@ -56,18 +57,24 @@ export default function ChooseRestaurant({ navigation }) {
                 >
                     <View
                         style={{
-                            paddingHorizontal: 40,
-                            paddingVertical: 20,
-                            borderBottomColor: '#777',
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: "flex-start",
+                            gap: 10,
+                            alignItems: "center",
+                            paddingHorizontal: 10,
+                            paddingVertical: 15,
+                            borderBottomColor: '#DADADA',
                             borderBottomWidth: 1,
                         }}
                     >
-                        <Text>Search ...</Text>
+                        <MaterialCommunityIcons name='chevron-left' style={{backgroundColor: "#F8F8FB", padding: 4}} size={28} color={"#f7941d"}/>
+                        <Text style={{fontSize: 14, color: "#777"}}>Search ...</Text>
                     </View>
                 </TouchableOpacity>
                 <Text style={styles.mainHeader}>Nearby Restaurants</Text>
-                <View>
-                    <Restaurant navigatation={navigation} />
+                <View style={styles.RestaurantContainer}>
+                    <Restaurant navigation={navigation} />
                 </View>
             </SafeAreaView>
         </SafeAreaView>
@@ -77,13 +84,16 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         flexDirection: 'row',
-        backgroundColor: '#D2D2CF',
+        backgroundColor: '#F8F8FB',
         borderRadius: 10,
         width: 370,
         height: 80,
         marginLeft: 20,
         marginBottom: 20,
         opacity: 0.9,
+    },
+    RestaurantContainer: {
+        marginTop: 25,
     },
     heading: {
         color: '#000',
@@ -105,9 +115,8 @@ const styles = StyleSheet.create({
     mainHeader: {
         marginLeft: 20,
         color: '#F7941D',
-        marginBottom: 40,
-        marginTop: 10,
-        fontSize: 18,
+        marginTop: 30,
+        fontSize: 14,
     },
     mainView: {
         marginTop : 25,

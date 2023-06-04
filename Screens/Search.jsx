@@ -3,7 +3,7 @@ import {View, Text, Image, StyleSheet} from 'react-native'
 import React from 'react';
 import colors from '../Utils/colors';
 
-const Search = (props) => {
+const SearchScreen = (props) => {
     const [text, onChangeText] = React.useState('');
 
     const searchSubmit = () => {
@@ -97,4 +97,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Search 
+export default SearchScreen 

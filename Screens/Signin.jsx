@@ -1,17 +1,56 @@
-import { Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { 
+    Alert, 
+    Image, 
+    SafeAreaView, 
+    StyleSheet, 
+    Text, 
+    TextInput, 
+    TouchableOpacity, 
+    View , 
+} from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
 import colors from "../Utils/colors"
 import {useFormik} from 'formik'
 import Icon from 'react-native-vector-icons/Feather'
+import * as Yup from 'yup'
+import axios from "axios"
+import * as SecureStore from "expo-secure-store"
 
 const SignIn = ({navigation}) => {
-    const {values} = useFormik({
+    const validationSchema = Yup.object({
+        email: Yup.string().email('Invalid email').required('Required'),
+        password: Yup.string().required('Required')
+    })
+    const {values, handleSubmit, handleChange} = useFormik({
         initialValues: {
             email: "",
             password: ""
         },
-        onSubmit: (values) => {
-            console.log(values)
+        onSubmit: async(values, {resetForm}) => {
+            if(!values.email || !values.password){
+                Alert.alert("All fields are required")
+                return;
+            }
+
+            try {
+                const res = await axios.post(`http://192.168.8.119:3000/signin`,
+                {
+                    email: values.email,
+                    password: values.password,
+                })
+                if(res.status === 201){
+                    resetForm()
+                    SecureStore.setItemAsync("token", res.data.token)
+                    SecureStore.setItemAsync("user", res.data.user)
+                    navigation.navigate('Scan')
+                }
+                else{
+                    throw new Error(res.data.message);
+                }
+            } catch (error) {
+                console.log(error)
+                Alert.alert('Error', error.message)   
+            }
         }
     })
     return (
@@ -32,8 +71,8 @@ const SignIn = ({navigation}) => {
                             <TextInput
                                 style={styles.input}
                                 value={values.email}
-                                // onChangeText={handleChange('email')}
-                                placeholder="You email"
+                                onChangeText={handleChange('email')}
+                                placeholder="Your email"
                                 autoCapitalize="none"
                             />
                             <Icon name="mail" size={20} color="#9098b2" style={styles.icon} />
@@ -44,14 +83,14 @@ const SignIn = ({navigation}) => {
                                 value={values.password}
                                 secureTextEntry={true}
                                 autoCapitalize="none"
-                                // onChangeText={handleChange('password')}
+                                onChangeText={handleChange('password')}
                                 placeholder="Password"
                             />
                             <Icon name="lock" size={20} color="#9098b2" style={styles.icon} />
                         </View>
                         <TouchableOpacity 
                             style={styles.button}
-                            onPress={() => navigation.navigate("Scan")}
+                            onPress={()=>handleSubmit()}
                         >
                             <Text style={styles.buttonText}>Sign in</Text>
                         </TouchableOpacity>
