@@ -1,10 +1,15 @@
+import React from "react"
 import { StyleSheet, Text, TextInput, View, SafeAreaView, TouchableOpacity, ScrollView, Alert } from "react-native"
 import {useFormik} from "formik"
 import Icon from 'react-native-vector-icons/Feather'
 import axios from "axios"
+import Spinner from "react-native-loading-spinner-overlay/lib"
+
 import colors from "../Utils/colors"
+import BaseUrl from "../Utils/BaseUrl"
 
 const Signup = ({navigation}) => {
+    const [loading, setLoading] = React.useState(false)
     const { values, handleSubmit, handleChange } = useFormik({
         initialValues: {
             email: "",
@@ -19,7 +24,10 @@ const Signup = ({navigation}) => {
             }
 
             try {
-                const res = await axios.post(`http://192.168.8.119:3000/signup`,
+                setLoading(true)
+                let url = `${BaseUrl}/auth/signup`
+                console.log(url)
+                const res = await axios.post(url,
                 {
                     email: values.email,
                     password: values.password,
@@ -30,6 +38,7 @@ const Signup = ({navigation}) => {
                     Alert.alert('Success', res.data.message)
                     resetForm()
                     navigation.navigate('SignIn')
+                    setLoading(false)
                 }
                 else{
                     throw new Error(res.data.message);
@@ -103,6 +112,7 @@ const Signup = ({navigation}) => {
 
                     <TouchableOpacity
                         style={styles.button}
+                        disabled={loading}
                         onPress={() => {
                             handleSubmit();
                         }}
@@ -134,6 +144,16 @@ const Signup = ({navigation}) => {
 
 const styles = StyleSheet.create({
     button: {
+        backgroundColor: colors.default,
+        borderRadius: 5,
+        elevation: 6,
+        padding: '5%',
+        shadowColor: 'rgba(0, 0, 0, 0.1)',
+        shadowOffset: { width: 1, height: 13 },
+        shadowOpacity: 0.8,
+        shadowRadius: 15,
+    },
+    disabledButton: {
         backgroundColor: colors.default,
         borderRadius: 5,
         elevation: 6,

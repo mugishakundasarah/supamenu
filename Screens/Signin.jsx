@@ -33,7 +33,7 @@ const SignIn = ({navigation}) => {
             }
 
             try {
-                const res = await axios.post(`http://192.168.8.119:3000/signin`,
+                const res = await axios.post(`http://192.168.8.133:3000/auth/signin`,
                 {
                     email: values.email,
                     password: values.password,
