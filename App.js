@@ -9,6 +9,7 @@ import {
 import AppLoading from "expo-app-loading"
 
 import Navigator from "./components/Navigator";
+import { AuthProvider } from "./contexts/AuthContext";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -21,8 +22,10 @@ export default function App() {
     return <AppLoading/>
   }
   return (
-    <NavigationContainer>
-      <Navigator/>
-    </NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer>
+        <Navigator/>
+      </NavigationContainer>
+    </AuthProvider>
   );
 }

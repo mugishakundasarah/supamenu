@@ -4,14 +4,15 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {Image, TouchableOpacity, View} from "react-native"
 import {AntDesign, MaterialCommunityIcons} from '@expo/vector-icons'
+import { useContext } from "react"
 
 
 import SignIn from "../Screens/Signin"
 import Signup from "../Screens/Signup"
 import Search from "../Screens/Search"
-import ChooseRestaurant from "../Screens/ChooseRestaurant"
-import SearchIcon from "../assets/search.png"
-import { CheckoutStack, SearchStack, ShoppingCartStack } from "../stacks"
+import {SearchStack, ShoppingCartStack } from "../stacks"
+import Signout from "../Screens/Signout"
+import { AuthContext } from "../contexts/AuthContext"
 
 const Navigator = () => {
     return <AppNavigator />
@@ -32,7 +33,7 @@ const AuthNavigator = () => {
 const Tabs = createBottomTabNavigator()
 
 const AppNavigator = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false)
+    const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
     
     useEffect(() => {
         async function getToken() {
@@ -143,6 +144,20 @@ const AppNavigator = () => {
                     tabBarIcon: ({color}) => (
                         <AntDesign 
                             name="shoppingcart" 
+                            size={25}
+                            color={color}
+                        />
+                    ),
+                    tabBarShowLabel: false 
+                }}
+            />
+            <Tabs.Screen
+                name="Signout"
+                component={Signout}
+                options={{
+                    tabBarIcon: ({color}) => (
+                        <AntDesign 
+                            name="logout" 
                             size={25}
                             color={color}
                         />

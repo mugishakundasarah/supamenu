@@ -1,4 +1,5 @@
 import { 
+    ActivityIndicator,
     Alert, 
     Image, 
     SafeAreaView, 
@@ -9,47 +10,56 @@ import {
     View , 
 } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
-import colors from "../Utils/colors"
+import { useContext } from "react"
 import {useFormik} from 'formik'
 import Icon from 'react-native-vector-icons/Feather'
-import * as Yup from 'yup'
 import axios from "axios"
 import * as SecureStore from "expo-secure-store"
+import React from "react"
+
+
+import colors from "../Utils/colors"
+import BaseUrl from "../Utils/BaseUrl"
+import { AuthContext } from "../contexts/AuthContext"
 
 const SignIn = ({navigation}) => {
-    const validationSchema = Yup.object({
-        email: Yup.string().email('Invalid email').required('Required'),
-        password: Yup.string().required('Required')
-    })
+    const [loading, setLoading] = React.useState(false)
+    const { setIsAuthenticated } = useContext(AuthContext);
     const {values, handleSubmit, handleChange} = useFormik({
         initialValues: {
             email: "",
             password: ""
         },
         onSubmit: async(values, {resetForm}) => {
+            setLoading(true)
             if(!values.email || !values.password){
                 Alert.alert("All fields are required")
+                setLoading(false);
                 return;
             }
 
             try {
-                const res = await axios.post(`http://192.168.8.133:3000/auth/signin`,
+                let url = `${BaseUrl}/auth/signin`
+                const res = await axios.post(url,
                 {
                     email: values.email,
                     password: values.password,
                 })
                 if(res.status === 201){
+                    setIsAuthenticated(true)
+                    setLoading(false);
                     resetForm()
                     SecureStore.setItemAsync("token", res.data.token)
-                    SecureStore.setItemAsync("user", res.data.user)
+                    SecureStore.setItemAsync("user", JSON.stringify(res.data.user))
                     navigation.navigate('Scan')
                 }
                 else{
+                    setLoading(false)
                     throw new Error(res.data.message);
                 }
             } catch (error) {
                 console.log(error)
-                Alert.alert('Error', error.message)   
+                setLoading(false) 
             }
         }
     })
@@ -88,11 +98,16 @@ const SignIn = ({navigation}) => {
                             />
                             <Icon name="lock" size={20} color="#9098b2" style={styles.icon} />
                         </View>
-                        <TouchableOpacity 
-                            style={styles.button}
-                            onPress={()=>handleSubmit()}
+                        <TouchableOpacity
+                          style={[styles.button, loading && styles.buttonDisabled]}
+                          disabled={loading}
+                          onPress={handleSubmit}
                         >
-                            <Text style={styles.buttonText}>Sign in</Text>
+                          {loading ? (
+                            <ActivityIndicator color="#ffffff" />
+                          ) : (
+                            <Text style={styles.buttonText}>Signin</Text>
+                          )}
                         </TouchableOpacity>
                     </View>
 
@@ -143,6 +158,26 @@ const SignIn = ({navigation}) => {
 export default SignIn
 
 const styles = StyleSheet.create({
+    button: {
+      backgroundColor: colors.mainColor,
+      borderRadius: 5,
+      elevation: 6,
+      padding: '5%',
+      shadowColor: 'rgba(0, 0, 0, 0.1)',
+      shadowOffset: { width: 1, height: 13 },
+      shadowOpacity: 0.8,
+      shadowRadius: 15,
+    },
+    buttonDisabled: {
+      opacity: 0.5, // Adjust the opacity or other styles to visually indicate the button is disabled
+    },
+    buttonText: {
+      color: colors.white,
+      fontFamily: 'Roboto_700Bold',
+      fontSize: 15,
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
     authButton: {
         alignItems: 'center',
         borderColor: colors.border,

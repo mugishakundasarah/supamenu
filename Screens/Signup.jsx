@@ -1,10 +1,8 @@
 import React from "react"
-import { StyleSheet, Text, TextInput, View, SafeAreaView, TouchableOpacity, ScrollView, Alert } from "react-native"
+import { StyleSheet, Text, TextInput, View, SafeAreaView, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from "react-native"
 import {useFormik} from "formik"
 import Icon from 'react-native-vector-icons/Feather'
 import axios from "axios"
-import Spinner from "react-native-loading-spinner-overlay/lib"
-
 import colors from "../Utils/colors"
 import BaseUrl from "../Utils/BaseUrl"
 
@@ -26,7 +24,6 @@ const Signup = ({navigation}) => {
             try {
                 setLoading(true)
                 let url = `${BaseUrl}/auth/signup`
-                console.log(url)
                 const res = await axios.post(url,
                 {
                     email: values.email,
@@ -44,8 +41,7 @@ const Signup = ({navigation}) => {
                     throw new Error(res.data.message);
                 }
             } catch (error) {
-                console.log(error)
-                Alert.alert('Error', error.message)   
+                console.log(error) 
             }
         }
     })
@@ -111,13 +107,15 @@ const Signup = ({navigation}) => {
                     </View>
 
                     <TouchableOpacity
-                        style={styles.button}
-                        disabled={loading}
-                        onPress={() => {
-                            handleSubmit();
-                        }}
+                      style={[styles.button, loading && styles.buttonDisabled]}
+                      disabled={loading}
+                      onPress={handleSubmit}
                     >
-                        <Text style={styles.buttonText}>proceed</Text>
+                      {loading ? (
+                        <ActivityIndicator color="#ffffff" />
+                      ) : (
+                        <Text style={styles.buttonText}>Proceed</Text>
+                      )}
                     </TouchableOpacity>
                 </View>
                 <View style={styles.horizontalContainer}>
@@ -144,31 +142,24 @@ const Signup = ({navigation}) => {
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: colors.default,
-        borderRadius: 5,
-        elevation: 6,
-        padding: '5%',
-        shadowColor: 'rgba(0, 0, 0, 0.1)',
-        shadowOffset: { width: 1, height: 13 },
-        shadowOpacity: 0.8,
-        shadowRadius: 15,
+      backgroundColor: colors.mainColor,
+      borderRadius: 5,
+      elevation: 6,
+      padding: '5%',
+      shadowColor: 'rgba(0, 0, 0, 0.1)',
+      shadowOffset: { width: 1, height: 13 },
+      shadowOpacity: 0.8,
+      shadowRadius: 15,
     },
-    disabledButton: {
-        backgroundColor: colors.default,
-        borderRadius: 5,
-        elevation: 6,
-        padding: '5%',
-        shadowColor: 'rgba(0, 0, 0, 0.1)',
-        shadowOffset: { width: 1, height: 13 },
-        shadowOpacity: 0.8,
-        shadowRadius: 15,
+    buttonDisabled: {
+      opacity: 0.5, // Adjust the opacity or other styles to visually indicate the button is disabled
     },
     buttonText: {
-        color: colors.white,
-        fontFamily: 'Roboto_700Bold',
-        fontSize: 15,
-        fontWeight: 'bold',
-        textAlign: 'center',
+      color: colors.white,
+      fontFamily: 'Roboto_700Bold',
+      fontSize: 15,
+      fontWeight: 'bold',
+      textAlign: 'center',
     },
     container: {
         backgroundColor: '#F7941D',
